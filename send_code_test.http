@@ -1,0 +1,85 @@
+### ارسال کد تأیید (OTP)
+POST http://127.0.0.1:8000/api/auth/send-code/
+Content-Type: application/json
+
+{
+  "phone": "09123456789"
+}
+
+### تأیید کد و دریافت JWT
+POST http://127.0.0.1:8000/api/auth/verify-code/
+Content-Type: application/json
+
+{
+  "phone": "09123456789",
+  "code": "89474"
+}
+
+### ثبت ابزار جدید (با JWT)
+POST http://127.0.0.1:8000/api/tools/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1MzA1NjU3LCJpYXQiOjE3NDQ3MDA4NTcsImp0aSI6ImU5NWYyNWIwMThlZDRkZjM5NGY5NDEwMmRlYTdjMmQxIiwidXNlcl9pZCI6MX0.KzlwlEz69BSQxq9q-sVW7UZZ1gIFX1AfTNSvMGPzGiY
+
+{
+  "name": "Test AI Tool",
+  "description": "ابزاری برای تست ثبت نظر",
+  "website": "https://test.com",
+  "license_type": "free",
+  "supports_farsi": true,
+  "is_sanctioned": false,
+  "is_filtered": false,
+  "highlight_feature": "سادگی استفاده",
+  "categories": [1],
+  "technologies": [2],
+  "has_chatbot": false,
+  "multi_language_support": false,
+  "desktop_version": false
+}
+
+### ثبت نظر برای ابزار (JWT لازم است)
+POST http://127.0.0.1:8000/api/tools/1/reviews/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1MzA1NjU3LCJpYXQiOjE3NDQ3MDA4NTcsImp0aSI6ImU5NWYyNWIwMThlZDRkZjM5NGY5NDEwMmRlYTdjMmQxIiwidXNlcl9pZCI6MX0.KzlwlEz69BSQxq9q-sVW7UZZ1gIFX1AfTNSvMGPzGiY
+
+{
+  "rating": 5,
+  "comment": "واقعا عالی بود برای تولید محتوا به فارسی!"
+}
+
+###
+GET http://127.0.0.1:8000/api/reviews/1/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1MzExMjE4LCJpYXQiOjE3NDQ3MDY0MTgsImp0aSI6ImYzNzMyNWI0N2Y0NjQwYTM4MzIzNDg3NmJlYjg0OGE3IiwidXNlcl9pZCI6MX0.GqoUNGJbHc0fTAaDiilbSwgh-rswhBBwqoSqP_2jmfs
+
+
+### تست ثبت ابزار با تگ
+POST http://127.0.0.1:8000/api/tools/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1MzExMjE4LCJpYXQiOjE3NDQ3MDY0MTgsImp0aSI6ImYzNzMyNWI0N2Y0NjQwYTM4MzIzNDg3NmJlYjg0OGE3IiwidXNlcl9pZCI6MX0.GqoUNGJbHc0fTAaDiilbSwgh-rswhBBwqoSqP_2jmfs
+
+{
+  "name": "ابزار تست با تگ",
+  "description": "برای تست تگ‌ها با قابلیت ذخیره",
+  "website": "https://example.com",
+  "license_type": "free",
+  "supports_farsi": true,
+  "is_sanctioned": false,
+  "is_filtered": false,
+  "highlight_feature": "تست تگ‌گذاری",
+  "categories": [1],
+  "technologies": [2],
+  "has_chatbot": true,
+  "multi_language_support": false,
+  "desktop_version": true,
+  "tag_ids": [1, 2]
+}
+
+
+### تست لایک
+POST http://127.0.0.1:8000/api/reactions/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ1MzExMjE4LCJpYXQiOjE3NDQ3MDY0MTgsImp0aSI6ImYzNzMyNWI0N2Y0NjQwYTM4MzIzNDg3NmJlYjg0OGE3IiwidXNlcl9pZCI6MX0.GqoUNGJbHc0fTAaDiilbSwgh-rswhBBwqoSqP_2jmfs
+Content-Type: application/json
+
+{
+  "review": 1,
+  "type": "like"
+}
