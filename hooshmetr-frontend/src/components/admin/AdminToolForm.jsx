@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function AdminToolForm({ onCreated, editTool }) {
   const [form, setForm] = useState({
@@ -108,6 +109,7 @@ function AdminToolForm({ onCreated, editTool }) {
         },
       });
       alert("✅ ابزار با موفقیت ثبت شد");
+      toast.success("✅ ابزار با موفقیت ذخیره شد!");
       onCreated?.();
       setForm({
         ...form,
@@ -121,6 +123,7 @@ function AdminToolForm({ onCreated, editTool }) {
       setScreenshot(null);
     } catch (err) {
       alert("❌ خطا در ثبت ابزار");
+      toast.error("❌ خطا در ذخیره ابزار.");
     } finally {
       setLoading(false);
     }

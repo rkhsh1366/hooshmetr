@@ -9,6 +9,13 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import os
+
+from decouple import config
+TSMS_USERNAME = config('TSMS_USERNAME')
+TSMS_PASSWORD = config('TSMS_PASSWORD')
+TSMS_SENDER = config('TSMS_SENDER')
+
 
 from pathlib import Path
 
@@ -29,7 +36,16 @@ SECRET_KEY = 'django-insecure-t68$36_+f3h2jnjz5e004cf0ov%@so3z!ux89pd1i8$o7sg_$k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '85.208.253.245',
+    'hooshmetr.ir',
+    'www.hooshmetr.ir',
+    'hooshmetr.com',
+    'www.hooshmetr.com',
+    '127.0.0.1',  # ✅ اضافه کن
+    'localhost'   # ⬅️ این هم خوبه برای تست لوکال
+]
+
 
 
 # Application definition
@@ -42,11 +58,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',  # برای ساخت API
+    'rest_framework_simplejwt',
     'tools',           # اپلیکیشن ابزارهای هوش مصنوعی
     'django_filters',  # 🔥 برای فیلترهای DRF لازم است
     'accounts',        # اپ مدیریت کاربران
+    'corsheaders',
+    'main',  # صفحه خانه و صفحات عمومی
+    'django.contrib.sitemaps',
+    'blog',
+
+
 
 ]
+
+
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
@@ -65,14 +90,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+# تنظیم CORS برای دسترسی به API از هر منبع
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'main', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,7 +161,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

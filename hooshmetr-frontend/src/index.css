@@ -1,2 +1,39 @@
 @import "tailwindcss";
-@import "tailwindcss/preflight";
+
+@import "@fontsource/vazirmatn";
+@import "@fontsource/vazirmatn/400.css"; /* Regular */
+@import "@fontsource/vazirmatn/700.css"; /* Bold */
+
+@theme {
+  --font-family: "Vazirmatn", sans-serif;
+  --primary-color: #3b82f6;
+  --secondary-color: #facc15;
+  --text-color: #1f2937;
+  --background-color: #f9f9f9;
+}
+
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #facc15;
+  --font-family: "Vazirmatn", sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  direction: rtl;
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: bold;
+}

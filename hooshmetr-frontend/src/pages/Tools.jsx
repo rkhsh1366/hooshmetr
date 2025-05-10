@@ -1,8 +1,6 @@
-// صفحه نمایش لیست ابزارها
-
 import { useEffect, useState } from "react";
-import { getTools } from "../api/tools";
-import ToolCard from "../components/ToolCard";
+import { getTools } from "@/api/tools";
+import ToolCard from "@/components/ToolCard";
 import SearchBar from "@/components/SearchBar";
 import FilterPanel from "@/components/FilterPanel";
 import SortMenu from "@/components/SortMenu";
@@ -12,9 +10,8 @@ function Tools() {
   const [tools, setTools] = useState([]);
   const [query, setQuery] = useState("");
 
-  // 🔠 تبدیل حروف فارسی به فرم نرمال برای جستجوی دقیق‌تر
-  const normalizePersian = (text) => {
-    return text
+  const normalizePersian = (text) =>
+    text
       .replace(/ي/g, "ی")
       .replace(/ك/g, "ک")
       .replace(/ة/g, "ه")
@@ -23,7 +20,6 @@ function Tools() {
       .replace(/ؤ/g, "و")
       .replace(/إ|أ|آ|ا/g, "ا")
       .toLowerCase();
-  };
 
   const [filters, setFilters] = useState({
     supports_farsi: false,
@@ -31,10 +27,9 @@ function Tools() {
     desktop_version: false,
     multi_language_support: false,
     is_filtered: false,
-    license_type: "", // "free"
+    license_type: "", // "free", "paid", "freemium"
   });
 
-  // 🔍 تابع فیلتر ابزارها با حساسیت به زبان فارسی و انگلیسی
   const filteredTools = tools.filter((tool) => {
     const q = normalizePersian(query.trim().toLowerCase());
 
@@ -53,9 +48,7 @@ function Tools() {
     return matchesSearch && matchesFilters;
   });
 
-  // استیت جدید برای مرتب‌سازی
   const [sortBy, setSortBy] = useState("name-asc");
-  // تابع مرتب‌سازی ابزارها
   const sortedTools = [...filteredTools].sort((a, b) => {
     switch (sortBy) {
       case "name-asc":
@@ -82,30 +75,42 @@ function Tools() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* 🔹 تیتر اصلی صفحه */}
-      <h2 className="text-2xl font-bold text-center text-purple-700 mb-6">
-        لیست ابزارهای هوش مصنوعی
-      </h2>
+    <section className="bg-gradient-to-b from-black via-gray-900 to-black min-h-screen text-white font-vazir px-4 py-12 rtl">
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-4xl font-extrabold text-yellow-400 text-center mb-10">
+          لیست ابزارهای هوش مصنوعی
+        </h2>
 
-      <FilterPanel filters={filters} onChange={setFilters} />
-      {/* 🔍 کامپوننت جستجو */}
-      <SearchBar value={query} onChange={setQuery} />
+        {/* 🔘 فیلترها و جستجو */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+          <div className="md:col-span-1">
+            <FilterPanel filters={filters} onChange={setFilters} />
+          </div>
+          <div className="md:col-span-2 flex flex-col gap-4">
+            <SearchBar value={query} onChange={setQuery} />
+            <SortMenu sortBy={sortBy} onChange={setSortBy} />
+          </div>
+        </div>
 
-      <SortMenu sortBy={sortBy} onChange={setSortBy} />
-
-      {/* 🧩 لیست کارت‌های ابزار با استفاده از داده‌های فیلتر شده */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedTools.map((tool) => (
-          <ToolCard
-            key={tool.id}
-            tool={tool}
-            onCompareToggle={toggleCompare}
-            isCompared={compareList.includes(tool.id)}
-          />
-        ))}
+        {/* 🧠 کارت ابزارها */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {sortedTools.length > 0 ? (
+            sortedTools.map((tool) => (
+              <ToolCard
+                key={tool.id}
+                tool={tool}
+                onCompareToggle={toggleCompare}
+                isCompared={compareList.includes(tool.id)}
+              />
+            ))
+          ) : (
+            <p className="text-center text-gray-400 col-span-full">
+              ابزاری با این مشخصات یافت نشد.
+            </p>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
