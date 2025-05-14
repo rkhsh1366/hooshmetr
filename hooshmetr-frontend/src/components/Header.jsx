@@ -64,14 +64,9 @@ export default function Header() {
           )}
 
           {!isAuthenticated && (
-            <>
-              <Link to="/login" className="hover:text-yellow-400 transition">
-                ورود
-              </Link>
-              <Link to="/register" className="hover:text-yellow-400 transition">
-                ثبت‌نام
-              </Link>
-            </>
+            <Link to="/login" className="hover:text-yellow-400 transition">
+              ورود / ثبت‌نام
+            </Link>
           )}
         </nav>
       </div>

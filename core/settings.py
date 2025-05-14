@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 
 from decouple import config
-TSMS_USERNAME = config('TSMS_USERNAME')
-TSMS_PASSWORD = config('TSMS_PASSWORD')
-TSMS_SENDER = config('TSMS_SENDER')
+TSMS_USERNAME = config('TSMS_USERNAME', default='')
+TSMS_PASSWORD = config('TSMS_PASSWORD', default='')
+TSMS_SENDER_PRIMARY = config("TSMS_SENDER_PRIMARY")
+TSMS_SENDER_FALLBACK = config("TSMS_SENDER_FALLBACK")
+
 
 
 from pathlib import Path
@@ -121,8 +123,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'hooshmetr_db',
+        'USER': 'hooshmetr_user',
+        'PASSWORD': '1Q@w3e4r',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

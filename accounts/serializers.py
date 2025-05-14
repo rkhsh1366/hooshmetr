@@ -1,41 +1,38 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils import timezone
-from .utils import send_otp_sms  # 🔹 ارسال پیامک
+from .utils import send_otp_sms
 from .models import OTP, CustomUser
 import random
 
 class SendCodeSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=11)
+    mobile = serializers.CharField(max_length=11)
 
-    def validate_phone(self, value):
+    def validate_mobile(self, value):
         if not value.isdigit() or len(value) != 11 or not value.startswith("09"):
             raise serializers.ValidationError("شماره موبایل معتبر نیست.")
         return value
 
     def create(self, validated_data):
-        phone = validated_data['phone']
-        code = str(random.randint(10000, 99999))  # ✅ تولید کد ۵ رقمی تصادفی
+        mobile = validated_data['mobile']
+        code = str(random.randint(1000, 9999))
 
-        # ذخیره کد در دیتابیس
-        OTP.objects.create(phone=phone, code=code)
+        OTP.objects.filter(mobile=mobile).delete()
+        OTP.objects.create(mobile=mobile, code=code)
+        send_otp_sms(mobile, code)
 
-        # 🚀 ارسال پیامک واقعی
-        send_otp_sms(phone, code)
-
-        return {'phone': phone}
-
+        return {'mobile': mobile}
 
 class VerifyCodeSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=11)
-    code = serializers.CharField(max_length=5)
+    mobile = serializers.CharField(max_length=11)
+    code = serializers.CharField(max_length=4)
 
     def validate(self, data):
-        phone = data['phone']
+        mobile = data['mobile']
         code = data['code']
 
         try:
-            otp = OTP.objects.filter(phone=phone).latest('created_at')
+            otp = OTP.objects.filter(mobile=mobile).latest('created_at')
         except OTP.DoesNotExist:
             raise serializers.ValidationError("کدی برای این شماره ثبت نشده است.")
 
@@ -50,10 +47,8 @@ class VerifyCodeSerializer(serializers.Serializer):
             otp.save()
             raise serializers.ValidationError("کد وارد شده اشتباه است.")
 
-        # ✅ ایجاد یا یافتن کاربر
-        user, created = CustomUser.objects.get_or_create(mobile=phone)
+        user, _ = CustomUser.objects.get_or_create(mobile=mobile)
 
-        # 🎫 صدور توکن JWT
         refresh = RefreshToken.for_user(user)
         refresh["role"] = user.role
         refresh["mobile"] = user.mobile
@@ -61,4 +56,9 @@ class VerifyCodeSerializer(serializers.Serializer):
         return {
             'refresh': str(refresh),
             'access': str(refresh.access_token),
+            'role': user.role,
         }
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'email']

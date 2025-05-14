@@ -2,13 +2,16 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [step, setStep] = useState(1); // مرحله: 1=شماره، 2=کد
+  const [step, setStep] = useState(1);
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const handleSendCode = async () => {
     if (!/^09\d{9}$/.test(mobile)) {
@@ -18,10 +21,10 @@ const Login = () => {
 
     setLoading(true);
     try {
-      await axios.post("/api/accounts/send-code/", { mobile });
+      await axios.post("/api/auth/send-code/", { mobile });
       toast.success("کد تأیید ارسال شد 📲");
       setStep(2);
-    } catch (err) {
+    } catch {
       toast.error("ارسال کد ناموفق بود.");
     }
     setLoading(false);
@@ -30,16 +33,17 @@ const Login = () => {
   const handleVerifyCode = async () => {
     setLoading(true);
     try {
-      const res = await axios.post("/api/accounts/verify-code/", {
+      const res = await axios.post("/api/auth/verify-code/", {
         mobile,
         code: otp,
       });
-      const { access, refresh } = res.data;
+      const { access, refresh, role } = res.data;
       localStorage.setItem("access", access);
       localStorage.setItem("refresh", refresh);
+      localStorage.setItem("role", role);
       toast.success("ورود موفق بود 🎉");
-      navigate("/admin-dashboard");
-    } catch (err) {
+      navigate(from, { replace: true });
+    } catch {
       toast.error("کد وارد شده صحیح نیست.");
     }
     setLoading(false);

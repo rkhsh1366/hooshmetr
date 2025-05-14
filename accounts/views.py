@@ -1,11 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import SendCodeSerializer, VerifyCodeSerializer
-from django.contrib.auth.models import User
-from django.contrib.auth.password_validation import validate_password
-from rest_framework.decorators import api_view
-from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from .serializers import SendCodeSerializer, VerifyCodeSerializer, ProfileSerializer
 
 class SendCodeView(APIView):
     def post(self, request):
@@ -15,8 +12,6 @@ class SendCodeView(APIView):
             return Response({"detail": "کد تأیید ارسال شد ✅"}, status=200)
         return Response(serializer.errors, status=400)
 
-
-
 class VerifyCodeView(APIView):
     def post(self, request):
         serializer = VerifyCodeSerializer(data=request.data)
@@ -24,4 +19,16 @@ class VerifyCodeView(APIView):
             return Response(serializer.validated_data, status=200)
         return Response(serializer.errors, status=400)
 
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        serializer = ProfileSerializer(request.user)
+        return Response(serializer.data)
+
+    def put(self, request):
+        serializer = ProfileSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)

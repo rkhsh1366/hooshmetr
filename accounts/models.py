@@ -3,7 +3,6 @@ from django.db import models
 from django.utils import timezone
 from datetime import timedelta
 
-# ✅ مدیر یوزر سفارشی
 class CustomUserManager(BaseUserManager):
     def create_user(self, mobile, password=None):
         if not mobile:
@@ -21,15 +20,17 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-# ✅ نقش‌های کاربر
 ROLE_CHOICES = [
     ('user', 'کاربر عادی'),
     ('admin', 'مدیر سایت'),
 ]
 
-# ✅ مدل اصلی کاربر
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     mobile = models.CharField(max_length=11, unique=True)
+    first_name = models.CharField(max_length=100, blank=True)
+    last_name = models.CharField(max_length=100, blank=True)
+    email = models.EmailField(blank=True)
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
@@ -42,20 +43,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.mobile
 
-# ✅ مدل کد تأیید
+
 class OTP(models.Model):
-    phone = models.CharField(max_length=11)
+    mobile = models.CharField(max_length=11)
     code = models.CharField(max_length=5)
     created_at = models.DateTimeField(auto_now_add=True)
     attempts = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.phone} - {self.code}"
+        return f"{self.mobile} - {self.code}"
 
     def is_expired(self):
-        """کد بیشتر از ۲ دقیقه اعتبار ندارد"""
         return timezone.now() > self.created_at + timedelta(minutes=2)
 
     def can_try(self):
-        """حداکثر ۵ تلاش برای وارد کردن کد"""
         return self.attempts < 5
