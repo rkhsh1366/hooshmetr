@@ -2,26 +2,28 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+// import "./tailwind.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 // فونت وزیرمتن
+// فونت وزیرمتن
 const vazirmatn = localFont({
   src: [
     {
-      path: "../fonts/Vazirmatn-Regular.woff2",
+      path: "../../public/fonts/fonts/webfonts/Vazirmatn-Regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../fonts/Vazirmatn-Medium.woff2",
+      path: "../../public/fonts/fonts/webfonts/Vazirmatn-Medium.woff2",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../fonts/Vazirmatn-Bold.woff2",
+      path: "../../public/fonts/fonts/webfonts/Vazirmatn-Bold.woff2",
       weight: "700",
       style: "normal",
     },

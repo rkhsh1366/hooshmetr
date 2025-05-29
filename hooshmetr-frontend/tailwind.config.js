@@ -70,7 +70,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["Vazirmatn", "sans-serif"],
+        vazirmatn: ["var(--font-vazirmatn)"],
+        inter: ["var(--font-inter)"],
       },
       fontSize: {
         "2xs": "0.625rem",
@@ -90,10 +91,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require("@tailwindcss/forms"),
-    require("@tailwindcss/typography"),
-    require("@tailwindcss/aspect-ratio"),
-    require("@tailwindcss/line-clamp"),
-  ],
+  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
 };
